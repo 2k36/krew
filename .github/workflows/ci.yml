@@ -36,11 +36,16 @@ jobs:
     - name: Make binaries && verify krew installation
       run: hack/make-all.sh
 
+    - name: Make release notes
+      run: |
+        echo 'RELEASE_NOTES<<EOF' >> $GITHUB_ENV
+        TAG=$GITHUB_REF_NAME hack/make-release-notes.sh >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+
     - name: Create a new release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
         name: Release ${{ github.ref_name }}
         files: out/krew*
-        generate_release_notes: true
-        apend_body: true
+        body: ${{ env.RELEASE_NOTES }}
