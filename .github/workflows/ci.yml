@@ -33,16 +33,14 @@ jobs:
     - name: Install gox
       run: hack/install-gox.sh
 
-    - name: Ensure go.mod is already tidied
-      run: go mod tidy && git diff --no-patch --exit-code
-
     - name: Make binaries && verify krew installation
       run: hack/make-all.sh
 
     - name: Create a new release
-      if: contains(github.ref, 'tags')
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
         name: Release ${{ github.ref_name }}
         files: out/krew*
+        generate_release_notes: true
+        apend_body: true
